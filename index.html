@@ -25,11 +25,39 @@ h1{font-size:29px;margin:12px 0 5px}h2{font-size:19px;margin:0 0 14px}.hstack{di
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.cell{font-size:clamp(7px,1.3vw,11px)}}
 @media(max-width:600px){.app{padding:12px}.panel{padding:12px}.cell{font-size:6.8px;padding:1px}.chart{gap:1px}.brand{font-size:20px}.stat strong{font-size:19px}}
 @media print{body{background:white}.top,.toolbar,.editor,.foot,.print-hide,.note{display:none!important}.layout{display:block}.app{padding:0}.panel{border:0;box-shadow:none;padding:0}.chart{width:100%;max-width:100%;page-break-inside:avoid}.cell{font-size:8px!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}h1{font-size:22px}}
-</style></head>
+
+.authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.authbar .who{color:#52707e;font-size:13px}.authpanel{margin-top:18px}
+.authgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.authgrid .span{grid-column:1/-1}
+#authMessage{min-height:22px;color:#a34032;font-size:13px;margin-top:9px}
+.pill{display:inline-block;padding:5px 9px;border-radius:50px;background:#e0f2ed;color:#205c51;font-weight:700;font-size:12px}
+@media(max-width:600px){.authgrid{grid-template-columns:1fr}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script><script src="/config.js" defer></script></head>
 <body><div class="app" id="app">
 <header class="top"><div><div class="eyebrow">YOUR PURPOSE • YOUR PLAN</div><div class="brand">✺ Mandala <span>& Ikigai</span></div><div class="subtitle" data-i18n="sub">Turn your life vision into 8 dimensions and 64 meaningful steps.</div></div>
 <div class="hstack"><button class="secondary" id="language">العربية</button><button class="secondary" id="print">↧ PDF / Print</button><button class="secondary" id="export">↓ JSON</button></div></header>
-<div class="note warn" style="margin-top:18px" id="prototypeNotice">Prototype only: data is saved in this browser. There are no secure accounts, cloud storage, ChatGPT integration, or direct Google Calendar connection yet. Do not enter sensitive personal information.</div>
+<section class="panel authpanel print-hide" aria-labelledby="accountTitle">
+ <div class="hstack"><h2 id="accountTitle">Tester access / دخول المشاركين</h2><span class="pill" id="accountStatus">Guest demo</span></div>
+ <p class="subtitle">Browse examples as a guest. To save a private personal chart across devices, create a verified account. Never share private plans without consent. / يمكنك تجربة الأمثلة كضيف، وسجل حساباً لحفظ خطتك الخاصة.</p>
+ <div id="signedOut">
+  <div class="authgrid">
+   <div><label class="field" for="authEmail">Email / البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email" maxlength="254"></div>
+   <div><label class="field" for="authPassword">Password / كلمة المرور</label><input id="authPassword" type="password" autocomplete="current-password" minlength="12" placeholder="12+ characters"></div>
+   <div id="signupExtra" class="span hide"><div class="authgrid">
+    <div><label class="field" for="authName">Display name / الاسم</label><input id="authName" maxlength="80" autocomplete="name"></div>
+    <div><label class="field" for="authAge">Age group / الفئة العمرية</label><select id="authAge"><option value="">Select age group</option><option value="adult">18 or over / ١٨ أو أكثر</option><option value="minor">Under 18 / أقل من ١٨</option></select></div>
+    <div class="span"><label><input id="consent" type="checkbox" style="width:auto"> I am 18 or older and agree to the trial privacy notice. / عمري ١٨ عاماً أو أكثر وأوافق على إشعار الخصوصية التجريبي.</label></div>
+    <p class="subtitle span">Under-18 registration is disabled in this testing release until an appropriate guardian-consent and safeguarding process exists.</p>
+   </div></div>
+  </div>
+  <div class="actions"><button id="loginBtn">Sign in / دخول</button><button class="secondary" id="signupToggle">Create account / حساب جديد</button><button class="secondary" id="signupBtn" hidden>Register / تسجيل</button><button class="secondary" id="forgotBtn">Reset password</button></div>
+ </div>
+ <div id="signedIn" class="hide"><div class="authbar"><span class="who" id="accountEmail"></span><button class="secondary" id="logoutBtn">Sign out / خروج</button><button class="secondary" id="deleteBtn">Delete my account data / حذف بياناتي</button></div><p class="subtitle">Your private charts are stored under your account. Other testers cannot see them. / مخططاتك خاصة بحسابك.</p></div>
+ <div id="authMessage" role="status" aria-live="polite"></div>
+ <div class="small muted">Trial privacy notice: email, display name, and personal charts are processed by the configured Supabase project. No analytics, WhatsApp collection, teacher access, or AI processing is active. Contact the site owner for privacy requests. This trial is intended for adults only.</div>
+</section>
+<div class="note warn" style="margin-top:18px" id="prototypeNotice">Trial website: guest edits stay on this device. Verified adult accounts can save private charts to cloud storage after configuration. No ChatGPT or direct Google Calendar connection. Do not enter sensitive information during testing.</div>
 <div class="toolbar"><select id="template" style="max-width:260px"><option value="blank">My personal Mandala / ماندالا خاصة بي</option><option value="salah">Mohamed Salah — educational example</option><option value="ohtani">Shohei Ohtani — illustrative example</option></select><button class="secondary" id="reset">↺ Reset selected example</button><button class="secondary" id="downloadIcs">◷ Calendar reminder (.ics)</button><button class="secondary" id="importBtn">↑ Import JSON</button><input type="file" accept="application/json" id="import" class="hide"></div>
 <div class="layout">
 <section class="panel"><div class="hstack"><div><div class="eyebrow" data-i18n="chartLabel">INTERACTIVE VISION MAP</div><h1 data-i18n="chartTitle">Your Mandala Chart</h1></div><div class="small muted" data-i18n="hint">Select any square to edit it</div></div>
@@ -52,11 +80,54 @@ const seeds={"blank": [["", "", "", "", "", "", "", "", ""], ["", "Family / ال
 const $=id=>document.getElementById(id);
 const copy=o=>JSON.parse(JSON.stringify(o));
 let lang='en',mode='blank',selected=[4,4];
-const key=name=>'mandala_demo_v1_'+name;
+let account=null,db=null,cloudTimer=null,cloudRevision=0;
+const key=name=>account?'mandala_account_v2_'+account.id+'_'+name:'mandala_guest_v2_'+name;
+
 let data={};try{data=JSON.parse(localStorage.getItem(key(mode)))||{}}catch(e){}
+async function driveRequest(method,template,content){
+ const {data:sessionData,error:sessionError}=await db.auth.getSession();
+ if(sessionError||!sessionData.session?.access_token)throw new Error('Sign in again to save to Google Drive.');
+ const res=await fetch('/api/chart?template='+encodeURIComponent(template),{
+  method,headers:{'Authorization':'Bearer '+sessionData.session.access_token,...(method==='PUT'?{'Content-Type':'application/json'}:{})},
+  ...(method==='PUT'?{body:JSON.stringify({content})}:{})
+ });
+ const result=await res.json().catch(()=>({}));
+ if(!res.ok)throw new Error(result.error||'Google Drive request failed ('+res.status+')');
+ return result;
+}
 function fresh(name){return {grid:copy(seeds[name]),checks:{},reflection:''}}
-function load(name){mode=name;try{data=JSON.parse(localStorage.getItem(key(name)))||fresh(name)}catch(e){data=fresh(name)}if(!Array.isArray(data.grid)||data.grid.length!==9)data=fresh(name);selected=[4,4];render()}
-function saveLocal(){try{localStorage.setItem(key(mode),JSON.stringify(data))}catch(e){alert('Browser storage is unavailable. Export JSON to keep a backup.')}}
+async function load(name){
+ mode=name;const expected=++cloudRevision;
+ // Registered charts are loaded from Google Drive, not browser-local backups.
+ if(account&&db)data=fresh(name);
+ else {try{data=JSON.parse(localStorage.getItem(key(name)))||fresh(name)}catch(e){data=fresh(name)}}
+ if(!Array.isArray(data.grid)||data.grid.length!==9)data=fresh(name);
+ selected=[4,4];render();
+ if(account&&db){
+  const uid=account.id;
+  try{
+   const result=await driveRequest('GET',name);
+   if(expected!==cloudRevision||!account||account.id!==uid||mode!==name)return;
+   if(result.content&&validChart(result.content)){data=result.content;render()}
+   showAuth('Google Drive connected / متصل بجوجل درايف');
+  }catch(e){showAuth('Cannot load Google Drive chart: '+e.message)}
+ }
+}
+function validChart(o){return !!o&&Array.isArray(o.grid)&&o.grid.length===9&&o.grid.every(row=>Array.isArray(row)&&row.length===9&&row.every(v=>typeof v==='string'&&v.length<=500))&&o.checks&&typeof o.checks==='object'&&typeof o.reflection==='string'&&o.reflection.length<=3000}
+function saveLocal(){
+ if(!account){try{localStorage.setItem(key(mode),JSON.stringify(data))}catch(e){showAuth('Local storage unavailable. Download a JSON backup.')}return}
+ if(account&&db){
+  const current=account.id,template=mode,content=copy(data);
+  clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(async()=>{
+   if(!account||account.id!==current)return;
+   try{
+    await driveRequest('PUT',template,content);
+    showAuth('Saved privately in Google Drive / تم الحفظ في جوجل درايف');
+   }catch(e){showAuth('Google Drive save failed: '+e.message)}
+  },700);
+ }
+}
 const translations={
 en:{sub:'Turn your life vision into 8 dimensions and 64 meaningful steps.',chartLabel:'INTERACTIVE VISION MAP',chartTitle:'Your Mandala Chart',hint:'Select any square to edit it',editorTitle:'Edit your plan',filled:'Filled steps',done:'Completed',progress:'Progress',selected:'Selected square',content:'Vision, dimension, or step',save:'Save change',mark:'Mark completed ✓',unmark:'Undo completed',reflect:'My reflection / weekly check-in',saveReflect:'Save reflection',coachTitle:'Reflection prompts',another:'Another prompt ↻'},
 ar:{sub:'حوّل رؤيتك للحياة إلى ٨ محاور و٦٤ خطوة ذات معنى.',chartLabel:'خريطة الرؤية التفاعلية',chartTitle:'مخطط الماندالا الخاص بك',hint:'اختر أي مربع لتعديله',editorTitle:'حرر خطتك',filled:'خطوات مكتوبة',done:'مكتمل',progress:'التقدم',selected:'المربع المختار',content:'الرؤية أو المحور أو الخطوة',save:'حفظ التعديل',mark:'تحديد كمكتمل ✓',unmark:'إلغاء الاكتمال',reflect:'تأملاتي / مراجعة أسبوعية',saveReflect:'حفظ المراجعة',coachTitle:'أسئلة للتأمل',another:'سؤال آخر ↻'}};
@@ -89,7 +160,7 @@ function applyLang(){
  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';$('language').textContent=lang==='en'?'العربية':'English';
  document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=translations[lang][el.dataset.i18n]);
  $('mentorText').textContent=prompts[lang][promptIndex%prompts[lang].length];
- $('prototypeNotice').textContent=lang==='ar'?'نسخة تجريبية فقط: تُحفظ البيانات في هذا المتصفح. لا توجد حسابات آمنة أو تخزين سحابي أو اتصال فعلي بـ ChatGPT أو Google Calendar بعد. لا تدخل معلومات شخصية حساسة.':'Prototype only: data is saved in this browser. There are no secure accounts, cloud storage, ChatGPT integration, or direct Google Calendar connection yet. Do not enter sensitive personal information.';
+ $('prototypeNotice').textContent=lang==='ar'?'نسخة تجريبية فقط: تُحفظ البيانات في هذا المتصفح. لا توجد حسابات آمنة أو تخزين سحابي أو اتصال فعلي بـ ChatGPT أو Google Calendar بعد. لا تدخل معلومات شخصية حساسة.':'Trial website: guest edits stay on this device. Verified adult accounts can save private charts to cloud storage after configuration. No ChatGPT or direct Google Calendar connection. Do not enter sensitive information during testing.';
  render();
 }
 $('language').onclick=()=>{lang=lang==='en'?'ar':'en';applyLang()};
@@ -110,5 +181,60 @@ $('downloadIcs').onclick=()=>{
  const escapeIcs=x=>String(x).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/[,;]/g,m=>'\\'+m);
  const stamp=dt.replaceAll('-','');const evt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mandala Ikigai Website//EN','BEGIN:VEVENT','UID:'+Date.now()+'@mandala.local','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'').replace('Z','Z'),'DTSTART;VALUE=DATE:'+stamp,'SUMMARY:'+escapeIcs(v),'DESCRIPTION:'+escapeIcs('Review your Mandala goal'),'END:VEVENT','END:VCALENDAR'].join('\r\n');
  download('mandala-reminder.ics',evt,'text/calendar');};
-applyLang();load('blank');
+let registerMode=false;
+const showAuth=message=>{$('authMessage').textContent=message};
+function paintAuth(){
+ $('signedOut').classList.toggle('hide',!!account);
+ $('signedIn').classList.toggle('hide',!account);
+ $('accountStatus').textContent=account?'Signed in / مسجل':'Guest demo / ضيف';
+ $('accountEmail').textContent=account?.email||'';
+}
+function requireDb(){if(!db){showAuth('Account service not configured yet. Set config.js and configure Supabase and Google Drive, then redeploy. Guest charts still work.');return false}return true}
+async function syncAccount(session){
+ clearTimeout(cloudTimer);cloudRevision++;
+ account=session?.user||null;paintAuth();await load(mode);
+}
+$('signupToggle').onclick=()=>{registerMode=!registerMode;$('signupExtra').classList.toggle('hide',!registerMode);$('signupBtn').hidden=!registerMode;$('loginBtn').hidden=registerMode;$('signupToggle').textContent=registerMode?'Back to sign in':'Create account / حساب جديد';showAuth('')};
+$('loginBtn').onclick=async()=>{
+ if(!requireDb())return;
+ const email=$('authEmail').value.trim(),password=$('authPassword').value;
+ const {error}=await db.auth.signInWithPassword({email,password});
+ showAuth(error?error.message:'Signed in successfully / تم تسجيل الدخول');
+};
+$('signupBtn').onclick=async()=>{
+ if(!requireDb())return;
+ if($('authAge').value!=='adult'||!$('consent').checked)return showAuth('This trial accepts adults 18+ only, with consent.');
+ const email=$('authEmail').value.trim(),password=$('authPassword').value,name=$('authName').value.trim();
+ if(!name||password.length<12)return showAuth('Enter display name and a password with at least 12 characters.');
+ const {error}=await db.auth.signUp({email,password,options:{data:{display_name:name,age_group:'adult'}}});
+ showAuth(error?error.message:'Check your email for a verification link before signing in.');
+};
+$('forgotBtn').onclick=async()=>{
+ if(!requireDb())return;
+ const email=$('authEmail').value.trim();if(!email)return showAuth('Enter your email first.');
+ const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
+ showAuth(error?error.message:'If the address exists, a reset email will be sent.');
+};
+$('logoutBtn').onclick=async()=>{if(db){const {error}=await db.auth.signOut();if(error)showAuth(error.message)}};
+$('deleteBtn').onclick=async()=>{
+ if(!db||!account)return;
+ if(!confirm('Permanently delete all your Google Drive Mandala charts? This does NOT delete your login account.'))return;
+ clearTimeout(cloudTimer);
+ try{
+  for(const name of ['blank','salah','ohtani'])await driveRequest('DELETE',name);
+  await load(mode);showAuth('Google Drive charts deleted. To delete your account, contact the site owner.');
+ }catch(e){showAuth('Deletion failed: '+e.message)}
+};
+async function initAuth(){
+ const cfg=window.MANDALA_CONFIG||{};
+ if(!cfg.supabaseUrl||!cfg.supabaseAnonKey||!window.supabase){showAuth('Guest demo ready. Owner must configure Supabase to enable sign-in.');paintAuth();return}
+ try{
+ db=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ db.auth.onAuthStateChange((event,session)=>{queueMicrotask(()=>syncAccount(session))});
+ const {data:{session},error}=await db.auth.getSession();
+ if(error)showAuth(error.message);
+ await syncAccount(session);
+ }catch(e){showAuth('Authentication setup error: '+e.message)}
+}
+applyLang();load('blank');window.addEventListener('DOMContentLoaded',initAuth);
 </script></body></html>
