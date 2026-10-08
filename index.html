@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mandala & Ikigai Vision | Interactive Website</title>
+<meta name="description" content="Create your personal Ikigai-inspired Mandala vision, customize eight life dimensions, plan 64 steps, and reflect on progress. Arabic and English.">
+<meta name="theme-color" content="#183448">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:title" content="Mandala & Ikigai Vision">
+<meta property="og:description" content="An interactive bilingual Mandala life-planning website.">
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,"Segoe UI",Tahoma,sans-serif;color:#183448;background:#f5f3ed}
+*{box-sizing:border-box}body{margin:0}.app{max-width:1500px;margin:auto;padding:26px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:850;font-size:25px;letter-spacing:-.6px}.brand span{color:#2f8b86}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#478078;font-weight:700}.subtitle{color:#657987;font-size:14px;line-height:1.6}
+button,select,input,textarea{font:inherit}button,.btn{border:0;background:#193b50;color:white;padding:11px 14px;border-radius:11px;cursor:pointer;font-weight:700}
+button:hover{filter:brightness(1.08)}button.secondary{background:white;color:#264959;border:1px solid #d6e2de}button.gold{background:#e6b95a;color:#263b47}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #e7b956}
+.panel{background:white;border:1px solid #e4e9e4;border-radius:19px;padding:20px;box-shadow:0 7px 23px #26445909}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:20px 0}
+.layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(310px,.75fr);gap:20px;align-items:start}
+h1{font-size:29px;margin:12px 0 5px}h2{font-size:19px;margin:0 0 14px}.hstack{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.chart{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px;aspect-ratio:1/1;max-width:860px;margin:14px auto}
+.cell{font-size:clamp(7px,.75vw,12px);line-height:1.22;border:1px solid #cbd7d6;border-radius:3px;background:#f2f6f4;color:#254557;padding:4px;min-width:0;overflow-wrap:anywhere;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;cursor:pointer}
+.cell:nth-child(odd){background:#ecf3f2}.cell.axis{background:#dbe8e3;font-weight:800}.cell.middle{background:#d6e5ee}.cell.vision{background:#edc568;color:#2f332c;font-weight:900;font-size:clamp(8px,1vw,14px)}.cell.selected{outline:3px solid #dd9050;outline-offset:-2px;z-index:1}.cell.completed:not(.vision):after{content:"✓";position:absolute;top:1px;inset-inline-end:2px;color:#197d68;font-size:12px;font-weight:900}
+.muted{color:#7e9397}.note{padding:12px 14px;border-radius:12px;background:#f0f5f2;font-size:13px;line-height:1.5;color:#426575}.warn{background:#fff1d8;color:#765528}
+.field{display:block;font-size:12px;color:#52707e;font-weight:750;margin:14px 0 5px}textarea,input,select{width:100%;border:1px solid #ccd9d5;border-radius:10px;padding:11px;background:#fff;color:#24404c}textarea{min-height:114px;resize:vertical;line-height:1.6}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{border-radius:12px;background:#eff4f2;padding:13px;text-align:center}.stat strong{font-size:23px;display:block}.stat span{font-size:11px;color:#52727e}.progress{height:9px;border-radius:99px;background:#e5ecea;overflow:hidden;margin-top:12px}.bar{height:100%;width:0%;background:#2c9182;transition:width .2s}
+.foot{font-size:12px;color:#58717d;margin:22px 0 5px;line-height:1.6}.small{font-size:12px}.hide{display:none}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.cell{font-size:clamp(7px,1.3vw,11px)}}
+@media(max-width:600px){.app{padding:12px}.panel{padding:12px}.cell{font-size:6.8px;padding:1px}.chart{gap:1px}.brand{font-size:20px}.stat strong{font-size:19px}}
+@media print{body{background:white}.top,.toolbar,.editor,.foot,.print-hide,.note{display:none!important}.layout{display:block}.app{padding:0}.panel{border:0;box-shadow:none;padding:0}.chart{width:100%;max-width:100%;page-break-inside:avoid}.cell{font-size:8px!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}h1{font-size:22px}}
+</style></head>
+<body><div class="app" id="app">
+<header class="top"><div><div class="eyebrow">YOUR PURPOSE • YOUR PLAN</div><div class="brand">✺ Mandala <span>& Ikigai</span></div><div class="subtitle" data-i18n="sub">Turn your life vision into 8 dimensions and 64 meaningful steps.</div></div>
+<div class="hstack"><button class="secondary" id="language">العربية</button><button class="secondary" id="print">↧ PDF / Print</button><button class="secondary" id="export">↓ JSON</button></div></header>
+<div class="note warn" style="margin-top:18px" id="prototypeNotice">Prototype only: data is saved in this browser. There are no secure accounts, cloud storage, ChatGPT integration, or direct Google Calendar connection yet. Do not enter sensitive personal information.</div>
+<div class="toolbar"><select id="template" style="max-width:260px"><option value="blank">My personal Mandala / ماندالا خاصة بي</option><option value="salah">Mohamed Salah — educational example</option><option value="ohtani">Shohei Ohtani — illustrative example</option></select><button class="secondary" id="reset">↺ Reset selected example</button><button class="secondary" id="downloadIcs">◷ Calendar reminder (.ics)</button><button class="secondary" id="importBtn">↑ Import JSON</button><input type="file" accept="application/json" id="import" class="hide"></div>
+<div class="layout">
+<section class="panel"><div class="hstack"><div><div class="eyebrow" data-i18n="chartLabel">INTERACTIVE VISION MAP</div><h1 data-i18n="chartTitle">Your Mandala Chart</h1></div><div class="small muted" data-i18n="hint">Select any square to edit it</div></div>
+<div class="chart" id="chart" role="grid" aria-label="Editable Mandala chart"></div>
+<div class="note" id="sampleNote"></div>
+</section>
+<aside class="editor"><section class="panel"><h2 data-i18n="editorTitle">Edit your plan</h2>
+<div class="stats"><div class="stat"><strong id="filled">0</strong><span data-i18n="filled">Filled steps</span></div><div class="stat"><strong id="done">0</strong><span data-i18n="done">Completed</span></div><div class="stat"><strong id="rate">0%</strong><span data-i18n="progress">Progress</span></div></div>
+<div class="progress"><div class="bar" id="progressBar"></div></div>
+<label class="field" data-i18n="selected">Selected square</label><div class="small muted" id="pos">Center vision</div>
+<label class="field" for="goalText" data-i18n="content">Vision, dimension, or step</label><textarea id="goalText" placeholder="Write your goal in Arabic or English"></textarea>
+<div class="actions"><button id="save" data-i18n="save">Save change</button><button class="secondary" id="complete" data-i18n="mark">Mark completed ✓</button></div>
+<label class="field" for="reflection" data-i18n="reflect">My reflection / weekly check-in</label><textarea id="reflection" placeholder="What worked this week? What will you improve?"></textarea>
+<div class="actions"><button class="secondary" id="saveReflection" data-i18n="saveReflect">Save reflection</button></div>
+<div class="note" style="margin-top:16px"><strong data-i18n="coachTitle">Reflection prompts</strong><p id="mentorText">What matters most about this goal, and what small step can you take this week?</p><button class="secondary" id="prompt" data-i18n="another">Another prompt ↻</button></div>
+</section></aside></div>
+<div class="foot">This is an interactive website prototype. Athlete charts are educational illustrations, not confirmed private plans. Your profile, age, WhatsApp, passwords, administrative records and minor consent should only be collected once a secure production system is ready.</div></div>
+<script>
+const seeds={"blank": [["", "", "", "", "", "", "", "", ""], ["", "Family / الأسرة", "", "", "Community / المجتمع", "", "", "Skills / المهارات", ""], ["", "", "", "", "", "", "", "", ""], ["", "", "", "Family / الأسرة", "Community / المجتمع", "Skills / المهارات", "", "", ""], ["", "Character / الشخصية", "", "Character / الشخصية", "My life vision / رؤيتي للحياة", "Health / الصحة", "", "Health / الصحة", ""], ["", "", "", "Education / التعليم", "Values / القيم", "Mindset / التفكير", "", "", ""], ["", "", "", "", "", "", "", "", ""], ["", "Education / التعليم", "", "", "Values / القيم", "", "", "Mindset / التفكير", ""], ["", "", "", "", "", "", "", "", ""]], "salah": [["أحافظ على صلة أقاربي.", "أخطط لمساندة أسرتي عندما أستطيع.", "أعبّر عن تقديري لدعم أسرتي.", "أخطط لتخصيص جزء من وقتي أو مواردي مستقبلًا لمساعدة الآخرين.", "أستخدم نجاحي لتشجيع الأطفال على التعلم والاجتهاد.", "أحترم الناس من مختلف الثقافات.", "أشاهد المباريات لأفهم قرارات اللاعبين.", "أستفيد من ملاحظات المدرب.", "أتدرب على التحكم بالكرة."], ["أحترم احتياجات أفراد أسرتي.", "٧. أحافظ على علاقتي بأسرتي وأقاربي", "أشاركهم أهدافي ومخاوفي.", "أتعرف إلى احتياجات مجتمعي.", "٨. أمثل مصر بصورة مشرفة وأخدم مجتمعي", "أتعلم التعبير عن بلدي بصورة إيجابية.", "أتدرب على إنهاء الهجمات.", "١. أطور مهاراتي في كرة القدم", "أحسّن دقة التمرير."], ["أخصص وقتًا للتواصل معهم.", "أشارك في مسؤوليات المنزل.", "أستمع إلى نصائحهم وأناقشها.", "أشارك في عمل تطوعي مناسب لعمري.", "أشجع زملائي الأصغر سنًّا.", "ألتزم بالسلوك الرياضي داخل الملعب وخارجه.", "أتعلم التحرك دون كرة.", "أطور المراوغة.", "أتدرب على التسديد بالقدمين."], ["أفي بوعودي.", "أفكر في عواقب قراراتي.", "ألتزم بالمواعيد.", "٧. أحافظ على علاقتي بأسرتي وأقاربي", "٨. أمثل مصر بصورة مشرفة وأخدم مجتمعي", "١. أطور مهاراتي في كرة القدم", "أنظم نومي ووقت راحتي.", "أبلغ عن الألم والإصابات وألتزم بتوجيهات المختصين.", "ألتزم بتدريب يناسب عمري بإشراف المدرب."], ["أوازن بين طموحي ومصلحة الفريق.", "٦. أبني شخصية مسؤولة ومحترفة", "أجهز أدواتي بنفسي.", "٦. أبني شخصية مسؤولة ومحترفة", "أن أصبح لاعب كرة قدم عالميًّا، أرفع اسم مصر، وأكون قدوة في الاجتهاد والأخلاق، وأساهم في إسعاد أسرتي وخدمة مجتمعي.", "٢. أبني لياقتي وأحافظ على صحتي", "أشرب الماء بانتظام.", "٢. أبني لياقتي وأحافظ على صحتي", "أطور سرعتي تدريجيًّا."], ["أتعاون مع زملائي.", "أستمع إلى النقد المفيد.", "أواظب على التدريب.", "٥. أواصل تعليمي وأخطط لما بعد الإعدادية", "٤. أتمسك بقيمي وإيماني", "٣. أقوّي تفكيري وقدرتي على مواجهة الصعوبات", "أتناول غذاءً متوازنًا.", "أهتم بالإحماء والمرونة.", "أحسّن قدرتي على التحمل."], ["أتعلم أساسيات استخدام الحاسب والبحث عن المعلومات.", "أستكشف مسارات أخرى تناسبني إذا تغيرت ظروفي الرياضية.", "أنظم وقت الدراسة والتدريب.", "أتحمل مسؤولية أخطائي.", "أساعد الآخرين قدر استطاعتي.", "أحافظ على عباداتي.", "أحتفل بالتقدم الصغير.", "أعدل خطتي عندما أواجه عائقًا.", "أحدد هدفًا واضحًا لكل تدريب."], ["أتعرف إلى ثقافات البلدان التي أطمح إلى اللعب فيها.", "٥. أواصل تعليمي وأخطط لما بعد الإعدادية", "أطلب الدعم في المواد الصعبة.", "أتواضع عند النجاح.", "٤. أتمسك بقيمي وإيماني", "أصدق في قولي وعملي.", "أراجع أدائي بعد المباريات.", "٣. أقوّي تفكيري وقدرتي على مواجهة الصعوبات", "أركز على ما أستطيع تحسينه."], ["أتعلم الإنجليزية وأمارسها.", "أناقش اختياراتي مع أسرتي ومعلميّ.", "أتعرف إلى بدائل التعليم الثانوي.", "أحترم المنافس والحكم.", "أشكر من يساعدني.", "ألتزم بالأمانة واللعب النظيف.", "أطلب المساعدة عند الحاجة.", "أتدرب على الهدوء تحت الضغط.", "أتعلم من الفرص الضائعة."]], "ohtani": [["Practice deliberately", "Reflect on progress", "Seek feedback", "Rest and recover", "Set weekly priorities", "Help teammates", "Learn consistently", "Review milestones", "Practice deliberately"], ["Reflect on progress", "Support network", "Rest and recover", "Set weekly priorities", "Community", "Learn consistently", "Review milestones", "Baseball skills", "Reflect on progress"], ["Seek feedback", "Rest and recover", "Set weekly priorities", "Help teammates", "Learn consistently", "Review milestones", "Practice deliberately", "Reflect on progress", "Seek feedback"], ["Rest and recover", "Set weekly priorities", "Help teammates", "Support network", "Community", "Baseball skills", "Reflect on progress", "Seek feedback", "Rest and recover"], ["Set weekly priorities", "Discipline", "Learn consistently", "Discipline", "Illustrative vision: Grow as an athlete and person / رؤية تعليمية تخيلية", "Fitness", "Seek feedback", "Fitness", "Set weekly priorities"], ["Help teammates", "Learn consistently", "Review milestones", "Learning", "Teamwork", "Mindset", "Rest and recover", "Set weekly priorities", "Help teammates"], ["Learn consistently", "Review milestones", "Practice deliberately", "Reflect on progress", "Seek feedback", "Rest and recover", "Set weekly priorities", "Help teammates", "Learn consistently"], ["Review milestones", "Learning", "Reflect on progress", "Seek feedback", "Teamwork", "Set weekly priorities", "Help teammates", "Mindset", "Review milestones"], ["Practice deliberately", "Reflect on progress", "Seek feedback", "Rest and recover", "Set weekly priorities", "Help teammates", "Learn consistently", "Review milestones", "Practice deliberately"]]};
+const $=id=>document.getElementById(id);
+const copy=o=>JSON.parse(JSON.stringify(o));
+let lang='en',mode='blank',selected=[4,4];
+const key=name=>'mandala_demo_v1_'+name;
+let data={};try{data=JSON.parse(localStorage.getItem(key(mode)))||{}}catch(e){}
+function fresh(name){return {grid:copy(seeds[name]),checks:{},reflection:''}}
+function load(name){mode=name;try{data=JSON.parse(localStorage.getItem(key(name)))||fresh(name)}catch(e){data=fresh(name)}if(!Array.isArray(data.grid)||data.grid.length!==9)data=fresh(name);selected=[4,4];render()}
+function saveLocal(){try{localStorage.setItem(key(mode),JSON.stringify(data))}catch(e){alert('Browser storage is unavailable. Export JSON to keep a backup.')}}
+const translations={
+en:{sub:'Turn your life vision into 8 dimensions and 64 meaningful steps.',chartLabel:'INTERACTIVE VISION MAP',chartTitle:'Your Mandala Chart',hint:'Select any square to edit it',editorTitle:'Edit your plan',filled:'Filled steps',done:'Completed',progress:'Progress',selected:'Selected square',content:'Vision, dimension, or step',save:'Save change',mark:'Mark completed ✓',unmark:'Undo completed',reflect:'My reflection / weekly check-in',saveReflect:'Save reflection',coachTitle:'Reflection prompts',another:'Another prompt ↻'},
+ar:{sub:'حوّل رؤيتك للحياة إلى ٨ محاور و٦٤ خطوة ذات معنى.',chartLabel:'خريطة الرؤية التفاعلية',chartTitle:'مخطط الماندالا الخاص بك',hint:'اختر أي مربع لتعديله',editorTitle:'حرر خطتك',filled:'خطوات مكتوبة',done:'مكتمل',progress:'التقدم',selected:'المربع المختار',content:'الرؤية أو المحور أو الخطوة',save:'حفظ التعديل',mark:'تحديد كمكتمل ✓',unmark:'إلغاء الاكتمال',reflect:'تأملاتي / مراجعة أسبوعية',saveReflect:'حفظ المراجعة',coachTitle:'أسئلة للتأمل',another:'سؤال آخر ↻'}};
+const prompts={en:['What matters most about this goal, and what small step can you take this week?','Which person could support you in making progress?','What might get in your way? What is a kind and realistic plan?','What did you learn from your last attempt?'],ar:['لماذا يهمك هذا الهدف؟ وما الخطوة الصغيرة التي تستطيع القيام بها هذا الأسبوع؟','من الشخص الذي يمكنه مساعدتك على التقدم؟','ما الصعوبة المتوقعة؟ وما الخطة الواقعية المناسبة؟','ماذا تعلمت من محاولتك السابقة؟']};
+let promptIndex=0;
+function isAnchor(r,c){return r===4&&c===4||(r%3===1&&c%3===1)||(r>=3&&r<=5&&c>=3&&c<=5)}
+function isAction(r,c){return !isAnchor(r,c)}
+function syncMirror(r,c,value){
+ const inner=[[3,3],[3,4],[3,5],[4,3],[4,5],[5,3],[5,4],[5,5]];
+ const outer=[[1,1],[1,4],[1,7],[4,1],[4,7],[7,1],[7,4],[7,7]];
+ for(let i=0;i<8;i++){let a=inner[i],b=outer[i];if((r===a[0]&&c===a[1])||(r===b[0]&&c===b[1])){data.grid[a[0]][a[1]]=value;data.grid[b[0]][b[1]]=value;break;}}
+}
+function render(){
+ const root=$('chart');root.replaceChildren();let filled=0,done=0;
+ for(let r=0;r<9;r++)for(let c=0;c<9;c++){
+  let v=data.grid[r][c]||'',mid=r>=3&&r<=5&&c>=3&&c<=5,anchor=isAnchor(r,c),id=r+'-'+c;
+  if(isAction(r,c)&&v.trim())filled++;
+  if(isAction(r,c)&&data.checks[id])done++;
+  let cell=document.createElement('button');cell.type='button';cell.className='cell'+(r===4&&c===4?' vision':mid?' middle':anchor?' axis':'')+(data.checks[id]?' completed':'')+(selected[0]===r&&selected[1]===c?' selected':'');
+  cell.textContent=v||'＋';cell.title=(r+1)+','+(c+1)+' — '+v;cell.setAttribute('aria-label',cell.title);
+  cell.onclick=()=>{selected=[r,c];render()};root.appendChild(cell);
+ }
+ $('filled').textContent=filled+'/64';$('done').textContent=done;$('rate').textContent=Math.round(100*done/64)+'%';$('progressBar').style.width=(100*done/64)+'%';
+ let [r,c]=selected;$('goalText').value=data.grid[r][c]||'';$('pos').textContent=r===4&&c===4?(lang==='ar'?'الرؤية المركزية':'Central vision'):(isAnchor(r,c)?(lang==='ar'?'محور رئيسي':'Main dimension'):(lang==='ar'?'خطوة عملية':'Action step'))+' · '+(r+1)+','+(c+1);
+ $('reflection').value=data.reflection||'';
+ $('complete').disabled=!isAction(r,c);$('complete').textContent=data.checks[r+'-'+c]?translations[lang].unmark:translations[lang].mark;
+ $('sampleNote').textContent=mode==='salah'?(lang==='ar'?'مثال تعليمي تخيلي لمحمد صلاح مأخوذ من ملف إكسل المرفق. ليس خطته الشخصية الحقيقية.':'Imaginary educational Mohamed Salah chart from your attached Excel file — not his actual personal plan.') : mode==='ohtani'?(lang==='ar'?'مثال تخيلي مبسط لأوتاني، وليس خطته الشخصية الحقيقية.':'Illustrative Shohei Ohtani example — not his actual personal plan.'):lang==='ar'?'قالب شخصي قابل للتعديل. أسماء المحاور مجرد اقتراحات ويمكن استبدالها.':'Your editable chart. Suggested dimensions are placeholders you may replace.';
+}
+function applyLang(){
+ document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';$('language').textContent=lang==='en'?'العربية':'English';
+ document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=translations[lang][el.dataset.i18n]);
+ $('mentorText').textContent=prompts[lang][promptIndex%prompts[lang].length];
+ $('prototypeNotice').textContent=lang==='ar'?'نسخة تجريبية فقط: تُحفظ البيانات في هذا المتصفح. لا توجد حسابات آمنة أو تخزين سحابي أو اتصال فعلي بـ ChatGPT أو Google Calendar بعد. لا تدخل معلومات شخصية حساسة.':'Prototype only: data is saved in this browser. There are no secure accounts, cloud storage, ChatGPT integration, or direct Google Calendar connection yet. Do not enter sensitive personal information.';
+ render();
+}
+$('language').onclick=()=>{lang=lang==='en'?'ar':'en';applyLang()};
+$('template').onchange=e=>load(e.target.value);
+$('save').onclick=()=>{let [r,c]=selected;let val=$('goalText').value.trim();data.grid[r][c]=val;syncMirror(r,c,val);saveLocal();render()};
+$('complete').onclick=()=>{let [r,c]=selected;if(!isAction(r,c))return;let id=r+'-'+c;data.checks[id]=!data.checks[id];saveLocal();render()};
+$('saveReflection').onclick=()=>{data.reflection=$('reflection').value;saveLocal();alert(lang==='ar'?'تم حفظ التأمل':'Reflection saved')};
+$('prompt').onclick=()=>{promptIndex++;$('mentorText').textContent=prompts[lang][promptIndex%prompts[lang].length]};
+$('reset').onclick=()=>{if(!confirm(lang==='ar'?'هل تريد استعادة النموذج الأصلي؟':'Restore this template? This erases saved changes for it.'))return;data=fresh(mode);saveLocal();render()};
+$('print').onclick=()=>window.print();
+function download(name,content,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+$('export').onclick=()=>download('mandala-'+mode+'.json',JSON.stringify(data,null,2),'application/json');
+$('importBtn').onclick=()=>$('import').click();
+$('import').onchange=async e=>{let file=e.target.files[0];if(!file)return;try{let obj=JSON.parse(await file.text());if(!Array.isArray(obj.grid)||obj.grid.length!==9||obj.grid.some(row=>!Array.isArray(row)||row.length!==9))throw Error('invalid');data={grid:obj.grid.map(row=>row.map(v=>String(v||'').slice(0,500))),checks:obj.checks||{},reflection:String(obj.reflection||'').slice(0,3000)};saveLocal();render()}catch(err){alert('Invalid JSON Mandala file')}e.target.value=''};
+$('downloadIcs').onclick=()=>{
+ let v=prompt(lang==='ar'?'عنوان التذكير (اتركه فارغًا للإلغاء):':'Reminder title (leave empty to cancel):',data.grid[selected[0]][selected[1]]||'Review my Mandala');
+ if(!v)return;let dt=prompt(lang==='ar'?'التاريخ YYYY-MM-DD':'Date YYYY-MM-DD',new Date().toISOString().slice(0,10));if(!/^\d{4}-\d{2}-\d{2}$/.test(dt)||isNaN(Date.parse(dt)))return alert('Invalid date');
+ const escapeIcs=x=>String(x).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/[,;]/g,m=>'\\'+m);
+ const stamp=dt.replaceAll('-','');const evt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mandala Ikigai Website//EN','BEGIN:VEVENT','UID:'+Date.now()+'@mandala.local','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'').replace('Z','Z'),'DTSTART;VALUE=DATE:'+stamp,'SUMMARY:'+escapeIcs(v),'DESCRIPTION:'+escapeIcs('Review your Mandala goal'),'END:VEVENT','END:VCALENDAR'].join('\r\n');
+ download('mandala-reminder.ics',evt,'text/calendar');};
+applyLang();load('blank');
+</script></body></html>
