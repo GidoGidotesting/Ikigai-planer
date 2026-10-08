@@ -182,7 +182,7 @@ $('downloadIcs').onclick=()=>{
  const stamp=dt.replaceAll('-','');const evt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Mandala Ikigai Website//EN','BEGIN:VEVENT','UID:'+Date.now()+'@mandala.local','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'').replace('Z','Z'),'DTSTART;VALUE=DATE:'+stamp,'SUMMARY:'+escapeIcs(v),'DESCRIPTION:'+escapeIcs('Review your Mandala goal'),'END:VEVENT','END:VCALENDAR'].join('\r\n');
  download('mandala-reminder.ics',evt,'text/calendar');};
 let registerMode=false;
-const showAuth=message=>{$('authMessage').textContent=message};
+const showAuth=message=>$('authMessage').textContent=message;
 function paintAuth(){
  $('signedOut').classList.toggle('hide',!!account);
  $('signedIn').classList.toggle('hide',!account);

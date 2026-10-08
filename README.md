@@ -40,4 +40,3 @@ This is a GitHub/Vercel-ready website. Registered adults log in through **Supaba
 - No teacher/admin features, actual OpenAI coaching, actual Google Calendar connection, or Canva API editing are implemented yet. **Vercel + Google Drive account configuration is required; opening `index.html` locally only enables guest mode.**
 - Autosave uses last-write-wins. Avoid editing the same account/chart concurrently in several tabs/devices; a future release should add version conflict checks.
 - For stronger defense before public launch add abuse throttling, monitoring, consent collection, account removal automation, and independently review security.
-
